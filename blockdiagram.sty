@@ -1,0 +1,169 @@
+%----------------------------------------------------------------------------------------
+% blockdiagram.sty a set of tikz macros to draw nice block diagrams
+% Guillaume J. Laurent 
+%----------------------------------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{blockdiagram}[2009/07/25 blockdiagram package]
+\RequirePackage{tikz}
+\usetikzlibrary{shapes,arrows}
+%----------------------------------------------------------------------------------------
+% some constants 
+%----------------------------------------------------------------------------------------
+\newcommand{\setdiagramscale}[1]{\tikzstyle{every node}=[scale=#1]}
+\newlength{\minimumblockheight}
+\setlength{\minimumblockheight}{1cm}
+\newlength{\minimumblockwidth}
+\setlength{\minimumblockwidth}{1.3cm}
+\newlength{\sumblockheight}
+\setlength{\sumblockheight}{0.6cm}
+\newlength{\defaultblockdistance}
+\setlength{\defaultblockdistance}{2cm}
+%----------------------------------------------------------------------------------------
+% blocks
+%
+% 	\block*[distance]{name of start node}{name of new node}{caption}
+%
+%		where * = r,l,a or b gives the relative position according to the start node
+%
+%----------------------------------------------------------------------------------------
+\tikzstyle{block} = [draw, fill=black!15, rectangle, minimum height=\minimumblockheight, minimum width=\minimumblockwidth]
+
+\newcommand{\blockr}[4][\defaultblockdistance]{
+\node [draw, block, right of = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\blockl}[4][\defaultblockdistance]{
+\node [draw, block, left of  = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\blocka}[4][\defaultblockdistance]{
+\node [draw, block, above of = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\blockb}[4][\defaultblockdistance]{
+\node [draw, block, below of = #2,node distance=#1] (#3) {#4};
+}
+%----------------------------------------------------------------------------------------
+% plantblocks 
+%
+% 	\plantblock*[distance]{name of start node}{name of new node}{caption}
+%
+%		where * = r,l,a or b gives the relative position according to the start node
+%
+%----------------------------------------------------------------------------------------
+\tikzstyle{plantblock} = [draw, double, fill=black!15, rectangle, 
+    minimum height=\minimumblockheight, minimum width=\minimumblockwidth]
+
+\newcommand{\plantblockr}[4][\defaultblockdistance]{
+\node [draw, plantblock, right of = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\plantblockl}[4][\defaultblockdistance]{
+\node [draw, plantblock, left of = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\plantblocka}[4][\defaultblockdistance]{
+\node [draw, plantblock, above of = #2,node distance=#1] (#3) {#4};
+}
+\newcommand{\plantblockb}[4][\defaultblockdistance]{
+\node [draw, plantblock, below of = #2,node distance=#1] (#3) {#4};
+}
+%----------------------------------------------------------------------------------------
+% sumblocks 
+%
+% 	\sumblock*[distance]{name of start node}{name of new node}{up sign}{left sign}{down sign}{right sign}
+%
+%		where * = r,l,a or b gives the relative position according to the start node
+%
+%----------------------------------------------------------------------------------------
+\tikzstyle{sumblock} = [draw, circle, fill=black!15, minimum size=\sumblockheight]
+\tikzstyle{sumcross} = [draw, cross out, fill=black!15, minimum size=0.707\sumblockheight]
+
+\newcommand{\sumblockr}[7][\defaultblockdistance]{
+\node [draw, sumblock, right of=#2, node distance=#1] (#3) {};
+\node [draw, sumcross, right of=#2, node distance=#1] {};
+\node [above of=#3, node distance=0.3\sumblockheight] {\tiny #4};
+\node [left of=#3,  node distance=0.3\sumblockheight] {\tiny #5};
+\node [below of=#3, node distance=0.3\sumblockheight] {\tiny #6};
+\node [right of=#3, node distance=0.3\sumblockheight] {\tiny #7};
+}
+\newcommand{\sumblockl}[7][\defaultblockdistance]{
+\node [draw, sumblock, left of=#2,  node distance=#1] (#3) {};
+\node [draw, sumcross, left of=#2, node distance=#1] {};
+\node [above of=#3, node distance=0.3\sumblockheight] {\tiny #4};
+\node [left of=#3,  node distance=0.3\sumblockheight] {\tiny #5};
+\node [below of=#3, node distance=0.3\sumblockheight] {\tiny #6};
+\node [right of=#3, node distance=0.3\sumblockheight] {\tiny #7};
+}
+\newcommand{\sumblocka}[7][\defaultblockdistance]{
+\node [draw, sumblock, above of=#2, node distance=#1] (#3) {};
+\node [draw, sumcross, above of=#2, node distance=#1] {};
+\node [above of=#3, node distance=0.3\sumblockheight] {\tiny #4};
+\node [left of=#3,  node distance=0.3\sumblockheight] {\tiny #5};
+\node [below of=#3, node distance=0.3\sumblockheight] {\tiny #6};
+\node [right of=#3, node distance=0.3\sumblockheight] {\tiny #7};
+}
+\newcommand{\sumblockb}[7][\defaultblockdistance]{
+\node [draw, sumblock, below of=#2, node distance=#1] (#3) {};
+\node [draw, sumcross, below of=#2, node distance=#1] {};
+\node [above of=#3, node distance=0.3\sumblockheight] {\tiny #4};
+\node [left of=#3,  node distance=0.3\sumblockheight] {\tiny #5};
+\node [below of=#3, node distance=0.3\sumblockheight] {\tiny #6};
+\node [right of=#3, node distance=0.3\sumblockheight] {\tiny #7};
+}
+%----------------------------------------------------------------------------------------
+% links 
+%
+% 	\*link{name of start node}{name of end node}{caption}
+%
+%		where * = '',xy,yx,yxy or yxyx gives the path of the link
+%
+% 	A link command creates automaticcaly a new node which name is #1-#2
+%
+%----------------------------------------------------------------------------------------
+\newcommand{\link}[3]{
+	\draw [->,>=latex'] (#1) -- node[name=#1-#2,above] {#3} (#2);
+}
+\newcommand{\ylink}[3]{
+	\draw [->,>=latex'] (#1) -- node[name=#1-#2,right] {#3} (#2);
+}
+\newcommand{\yxlink}[3]{
+	\draw [->,>=latex'] (#1) |- node[name=#1-#2,near end,above] {#3} (#2)  ;
+}
+\newcommand{\xylink}[3]{
+	\draw [->,>=latex'] (#1) -| node[name=#1-#2,near end,right] {#3} (#2) ;
+}
+\newcommand{\yxylink}[4][-\defaultblockdistance]{
+	\draw [->,>=latex'] (#2) |- ++(0cm,#1) -| node[name=#2-#3,near end,right] {#4} (#3) ;
+}
+\newcommand{\yxyxlink}[4][-\defaultblockdistance]{
+	\draw [<-,>=latex'] (#3) -- ++(-0.5cm,0cm) -- node[name=#2-#3,right] {#4} ++(0cm,#1) -|  (#2) ;
+}
+%----------------------------------------------------------------------------------------
+% nodes
+%
+% 	\node*[distance]{name of start node}{name of new node}
+%
+%		where * = r,l,a or b gives the relative position according to the start node
+%
+%----------------------------------------------------------------------------------------
+\newcommand{\inputnode}[1]{
+	\node [coordinate] (#1) {};
+}
+\newcommand{\outputnode}[3][\defaultblockdistance]{
+	\node [coordinate, right of=#2, node distance=#1] (#3) {};
+}
+\newcommand{\nodea}[3][\defaultblockdistance]{
+	\node [above of=#2, node distance=#1] (#3) {};
+}
+\newcommand{\nodeb}[3][\defaultblockdistance]{
+	\node [below of=#2, node distance=#1] (#3) {};
+}
+\newcommand{\noder}[3][\defaultblockdistance]{
+	\node [right of=#2, node distance=#1] (#3) {};
+}
+\newcommand{\nodel}[3][\defaultblockdistance]{
+	\node [left of=#2, node distance=#1] (#3) {};
+}
+\newcommand{\linknode}[3][\defaultblockdistance]{
+	\draw [scale=\diagramscale] (#2) ++(-#1,0cm) node[name=#3] {};
+}
+
+%----------------------------------------------------------------------------------------
+% end
+%----------------------------------------------------------------------------------------
